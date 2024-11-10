@@ -18,6 +18,11 @@ import (
 	"github.com.br/devfullcycle/fc-ms-wallet/pkg/uow"
 	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
 	_ "github.com/go-sql-driver/mysql"
+/*
+	"github.com/golang-migrate/migrate/v4"
+    "github.com/golang-migrate/migrate/v4/database/mysql"
+    _ "github.com/golang-migrate/migrate/v4/source/file"
+	*/
 )
 
 func main() {
@@ -26,6 +31,18 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+/*
+	drive_mysql, _ := mysql.WithInstance(db, &mysql.Config{})
+	
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://../internal/database/migrations",
+		"mysql", drive_mysql)
+	if err != nil {
+		panic(err)
+	}
+	m.Up()
+	*/
+	
 	_, err = db.Exec("CREATE TABLE IF NOT EXISTS clients (id varchar(255), name varchar(255), email varchar(255), created_at date)")
 	if err != nil {
 		panic(err)
@@ -50,6 +67,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+		
 
 	configMap := ckafka.ConfigMap{
 		"bootstrap.servers": "kafka:29092",
