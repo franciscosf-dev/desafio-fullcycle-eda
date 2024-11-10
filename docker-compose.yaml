@@ -1,16 +1,27 @@
 version: '3'
 
 services:
-  goapp: 
+  wallet-core-app:
     build: .
+    container_name: wallet-core
     platform: linux/amd64
     volumes:
-      - .:/app
+      - ./wallet-core:/app
     ports:
       - 8080:8080
+  
+  wallet-balance-app:
+    build: .
+    container_name: wallet-balance
+    platform: linux/amd64
+    volumes:
+      - ./wallet-balance:/app
+    ports:
+      - 3003:3003
 
-  mysql:
+  mysql-wallet-core:
     image: mysql:5.7
+    container_name: mysql-wallet-core
     platform: linux/amd64
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -19,7 +30,20 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - .docker/mysql:/var/lib/mysql
+      - .docker/wallet-core:/var/lib/mysql
+
+  mysql-wallet-balance:
+    image: mysql:5.7
+    container_name: mysql-wallet-balance
+    platform: linux/amd64
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: walletbalance
+      MYSQL_PASSWORD: root
+    ports:
+      - 3307:3306
+    volumes:
+      - .docker/wallet-balance:/var/lib/mysql
 
   zookeeper:
     image: "confluentinc/cp-zookeeper:6.1.0"
